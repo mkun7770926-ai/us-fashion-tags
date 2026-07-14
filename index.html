@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="app-version" content="iphone-ultra-compact-v3">
 <title>大鹅组-US服装带货标签</title>
 <style>
 :root {
@@ -103,6 +104,456 @@ button,input{font:inherit;-webkit-appearance:none;appearance:none}button{touch-a
 @media(min-width:651px) and (max-width:850px){
   .app{padding-left:16px;padding-right:16px}
 }}
+
+/* ===== iPhone 紧凑版覆盖样式 ===== */
+@media (max-width:650px){
+  .app{
+    max-width:480px;
+    padding:
+      max(8px,env(safe-area-inset-top))
+      max(10px,env(safe-area-inset-right))
+      calc(34px + env(safe-area-inset-bottom))
+      max(10px,env(safe-area-inset-left));
+  }
+
+  .hero{
+    border-radius:18px;
+    padding:15px 13px 13px;
+  }
+
+  .hero h1{
+    margin:0 0 6px;
+    font-size:20px;
+    line-height:1.22;
+    letter-spacing:-.35px;
+    white-space:nowrap;
+  }
+
+  .hero-note{
+    margin-top:0;
+    font-size:9.5px;
+    line-height:1.48;
+    color:rgba(255,255,255,.68);
+  }
+
+  .hero-note div+div{
+    margin-top:1px;
+  }
+
+  .controls{
+    grid-template-columns:1fr;
+    gap:8px;
+    margin-top:11px;
+  }
+
+  .search{
+    min-height:41px;
+    padding:9px 12px;
+    border-radius:12px;
+    font-size:16px; /* 保持16px，防止iPhone点击输入框时自动放大 */
+  }
+
+  .search::placeholder{
+    font-size:14px;
+  }
+
+  .mode{
+    gap:4px;
+    padding:4px;
+    border-radius:13px;
+  }
+
+  .mode button{
+    min-height:38px;
+    padding:7px 6px;
+    border-radius:10px;
+    font-size:13.5px;
+  }
+
+  .rulebar{
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:7px;
+    margin:10px 2px 5px;
+    align-items:center;
+  }
+
+  .ruletext{
+    font-size:11px;
+    line-height:1.4;
+  }
+
+  .linkbtn{
+    font-size:11.5px;
+    line-height:1.25;
+  }
+
+  .result{
+    margin:9px 0 5px;
+    padding:11px;
+    border-radius:14px;
+  }
+
+  .result-head{
+    margin-bottom:7px;
+  }
+
+  .result-title{
+    font-size:13px;
+  }
+
+  .result-head .linkbtn{
+    font-size:10.5px;
+  }
+
+  .result-text{
+    padding:9px 10px;
+    border-radius:10px;
+    font-size:11.5px;
+    line-height:1.58;
+  }
+
+  .result-note{
+    margin:5px 2px 0;
+    font-size:9px;
+    line-height:1.45;
+  }
+
+  .result-actions{
+    gap:6px;
+    margin-top:8px;
+  }
+
+  .smallbtn{
+    min-height:36px;
+    padding:7px 8px;
+    border-radius:9px;
+    font-size:12px;
+  }
+
+  .group{
+    margin-top:17px;
+  }
+
+  .group-title{
+    gap:7px;
+    margin:0 2px 8px;
+    font-size:18px;
+    line-height:1.25;
+  }
+
+  .badge{
+    padding:3px 7px;
+    font-size:10px;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+
+  .card{
+    display:block;
+    position:relative;
+    min-height:91px;
+    padding:11px 10px 10px;
+    border-radius:14px;
+    box-shadow:0 3px 12px rgba(23,43,84,.045);
+  }
+
+  .card-main{
+    min-width:0;
+  }
+
+  .card-name{
+    margin:0;
+    font-size:14px;
+    line-height:1.3;
+    letter-spacing:-.1px;
+  }
+
+  .card-meta{
+    margin-top:6px;
+    padding-right:0;
+    padding-bottom:17px;
+    font-size:10px;
+    line-height:1.35;
+  }
+
+  .card-copy{
+    position:absolute;
+    right:9px;
+    bottom:8px;
+    display:block;
+    min-width:0;
+    height:auto;
+    padding:0;
+    border-radius:0;
+    background:transparent;
+    font-size:10.5px;
+    line-height:1;
+  }
+
+  .toast{
+    top:calc(env(safe-area-inset-top) + 7px);
+    padding:9px 13px;
+    border-radius:11px;
+    font-size:12px;
+  }
+
+  .toast.ok::before{
+    width:17px;
+    height:17px;
+    margin-right:6px;
+    font-size:11px;
+  }
+
+  .modal{
+    padding:18px 15px calc(18px + env(safe-area-inset-bottom));
+  }
+
+  .modal h2{
+    font-size:18px;
+  }
+
+  .modal li{
+    margin:8px 0;
+    font-size:12.5px;
+    line-height:1.55;
+  }
+}
+
+@media (max-width:365px){
+  .hero h1{font-size:18px}
+  .hero-note{font-size:9px}
+  .card-name{font-size:13px}
+  .card-meta{font-size:9.5px}
+}
+
+
+/* ===== iPhone 超紧凑双列版 v3 ===== */
+@media (max-width:650px){
+  .app{
+    max-width:480px;
+    padding:
+      max(6px,env(safe-area-inset-top))
+      max(8px,env(safe-area-inset-right))
+      calc(28px + env(safe-area-inset-bottom))
+      max(8px,env(safe-area-inset-left));
+  }
+
+  .hero{
+    border-radius:16px;
+    padding:12px 11px 11px;
+  }
+
+  .hero h1{
+    margin:0 0 5px;
+    font-size:18px;
+    line-height:1.18;
+    letter-spacing:-.4px;
+    white-space:nowrap;
+  }
+
+  .hero-note{
+    margin-top:0;
+    font-size:8.8px;
+    line-height:1.42;
+  }
+
+  .hero-note div+div{
+    margin-top:1px;
+  }
+
+  .controls{
+    gap:7px;
+    margin-top:9px;
+  }
+
+  .search{
+    min-height:38px;
+    padding:7px 10px;
+    border-radius:11px;
+    font-size:16px;
+  }
+
+  .search::placeholder{
+    font-size:13px;
+  }
+
+  .mode{
+    gap:3px;
+    padding:3px;
+    border-radius:11px;
+  }
+
+  .mode button{
+    min-height:34px;
+    padding:5px 5px;
+    border-radius:9px;
+    font-size:12.5px;
+  }
+
+  .rulebar{
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:5px;
+    margin:8px 1px 3px;
+  }
+
+  .ruletext{
+    font-size:10px;
+    line-height:1.32;
+  }
+
+  .linkbtn{
+    font-size:10.5px;
+  }
+
+  .result{
+    margin:7px 0 3px;
+    padding:9px;
+    border-radius:12px;
+  }
+
+  .result-title{
+    font-size:12px;
+  }
+
+  .result-head{
+    margin-bottom:6px;
+  }
+
+  .result-head .linkbtn{
+    font-size:9.5px;
+  }
+
+  .result-text{
+    padding:8px 9px;
+    border-radius:9px;
+    font-size:10.5px;
+    line-height:1.5;
+  }
+
+  .result-note{
+    margin:4px 1px 0;
+    font-size:8.4px;
+    line-height:1.35;
+  }
+
+  .result-actions{
+    gap:5px;
+    margin-top:7px;
+  }
+
+  .smallbtn{
+    min-height:32px;
+    padding:6px 7px;
+    border-radius:8px;
+    font-size:11px;
+  }
+
+  .group{
+    margin-top:13px;
+  }
+
+  .group-title{
+    gap:6px;
+    margin:0 1px 6px;
+    font-size:16px;
+    line-height:1.2;
+  }
+
+  .badge{
+    padding:2px 6px;
+    font-size:9px;
+  }
+
+  .grid{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:6px;
+  }
+
+  .card{
+    min-width:0;
+    min-height:76px;
+    padding:9px 8px 8px;
+    border-radius:12px;
+  }
+
+  .card-name{
+    margin:0;
+    font-size:12.5px;
+    line-height:1.22;
+    letter-spacing:-.15px;
+  }
+
+  .card-meta{
+    margin-top:4px;
+    padding-bottom:14px;
+    font-size:8.8px;
+    line-height:1.25;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .card-copy{
+    right:7px;
+    bottom:6px;
+    font-size:9.3px;
+    line-height:1;
+  }
+
+  .toast{
+    top:calc(env(safe-area-inset-top) + 5px);
+    padding:8px 11px;
+    border-radius:10px;
+    font-size:11px;
+  }
+}
+
+/* 小屏 iPhone 仍保持双列 */
+@media (max-width:390px){
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .hero h1{
+    font-size:17px;
+  }
+
+  .hero-note{
+    font-size:8.4px;
+  }
+
+  .card{
+    min-height:73px;
+    padding:8px 7px 7px;
+  }
+
+  .card-name{
+    font-size:11.8px;
+  }
+
+  .card-meta{
+    font-size:8.2px;
+  }
+
+  .card-copy{
+    font-size:8.8px;
+  }
+}
+
+@media (max-width:340px){
+  .hero h1{
+    font-size:16px;
+  }
+
+  .card-name{
+    font-size:11.2px;
+  }
+}
+
 </style>
 </head>
 <body>
