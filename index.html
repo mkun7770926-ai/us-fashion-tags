@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>大鹅组-US服装带货标签</title>
+<style>
+:root {
+  --bg:#f2f4f9; --card:#ffffff; --text:#12203a; --muted:#748098;
+  --line:#e3e8f1; --primary:#5869f8; --primary2:#3f7cf6;
+  --ok:#15a46d; --shadow:0 12px 32px rgba(36,49,84,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+button,input{font:inherit}
+.app{max-width:1120px;margin:0 auto;padding:22px 18px 64px}
+.hero{background:linear-gradient(135deg,#06183f 0%,#0b2f72 50%,#1556a6 100%);color:#fff;border-radius:24px;padding:25px;box-shadow:var(--shadow)}
+.hero h1{margin:0 0 6px;font-size:clamp(24px,4vw,38px)}
+.hero p{margin:0;color:rgba(255,255,255,.82);line-height:1.7}
+.hero-note{margin-top:8px;font-size:11px;line-height:1.5;color:rgba(255,255,255,.70)}
+.controls{display:grid;grid-template-columns:1fr auto;gap:12px;margin-top:18px}
+.search{width:100%;border:1px solid rgba(152,191,255,.32);background:rgba(255,255,255,.10);color:#fff;border-radius:14px;padding:13px 15px;outline:none}
+.search::placeholder{color:rgba(255,255,255,.62)}
+.mode{display:flex;gap:7px;background:rgba(255,255,255,.10);padding:5px;border-radius:14px}
+.mode button{border:0;background:transparent;color:rgba(255,255,255,.74);padding:8px 12px;border-radius:10px;cursor:pointer;white-space:nowrap}
+.mode button.active{background:#fff;color:#17356f;font-weight:800;box-shadow:0 4px 14px rgba(1,16,52,.16)}
+.rulebar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:18px 0 10px}
+.ruletext{font-size:14px;color:var(--muted)}
+.linkbtn{border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer}
+.result{display:none;margin:16px 0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.result.show{display:block}
+.result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.result-title{font-weight:800}
+.result-text{background:#f7f8fc;border:1px solid #dfe4ee;border-radius:13px;padding:13px;line-height:1.8;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.result-note{margin:7px 4px 0;font-size:11px;line-height:1.55;color:#8791a5;word-break:break-word}
+.result-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+.smallbtn{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 12px;cursor:pointer;color:var(--text)}
+.smallbtn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.group{margin-top:24px}
+.group-title{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:20px}
+.badge{font-size:12px;background:#e8edff;color:#4458da;border-radius:999px;padding:4px 8px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.card{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:15px;cursor:pointer;transition:.18s;box-shadow:0 5px 18px rgba(36,49,84,.04);min-height:93px}
+.card:hover{transform:translateY(-2px);border-color:#cdd5ff;box-shadow:var(--shadow)}
+.card:active{transform:scale(.985)}
+.card-name{font-weight:800;font-size:16px;margin-bottom:8px}
+.card-meta{font-size:12px;color:var(--muted)}
+.card-copy{position:absolute;right:12px;bottom:12px;color:var(--primary);font-size:12px;font-weight:800}
+.empty{display:none;text-align:center;padding:50px 0;color:var(--muted)}
+.toast{position:fixed;z-index:99;left:50%;top:18px;transform:translate(-50%,-120px);background:#10182a;color:#fff;border-radius:14px;padding:12px 18px;box-shadow:0 12px 36px rgba(0,0,0,.22);transition:.28s;max-width:calc(100vw - 28px);text-align:center;font-weight:700}
+.toast.show{transform:translate(-50%,0)}
+.toast.ok::before{content:"✓";display:inline-grid;place-items:center;width:20px;height:20px;margin-right:8px;border-radius:50%;background:var(--ok);font-size:13px}
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:90;background:rgba(10,15,30,.46);padding:20px;align-items:center;justify-content:center}
+.modal-backdrop.show{display:flex}
+.modal{width:min(620px,100%);max-height:82vh;overflow:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 30px 70px rgba(0,0,0,.2)}
+.modal h2{margin-top:0}
+.modal li{margin:10px 0;line-height:1.65}
+.modal code{background:#f1f3f8;padding:2px 6px;border-radius:6px}
+.modal-actions{display:flex;justify-content:flex-end;margin-top:18px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){
+  .app{padding:14px 12px 48px}
+  .hero{border-radius:19px;padding:20px 16px}
+  .controls{grid-template-columns:1fr}
+  .mode{display:grid;grid-template-columns:1fr 1fr}
+  .mode button{width:100%}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .card{padding:13px;min-height:88px}
+}
+@media(max-width:390px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="toast" class="toast ok">复制成功</div>
+
+<div class="app">
+  <section class="hero">
+    <h1>大鹅组-US服装带货标签</h1>
+    <div class="hero-note">
+      <div>① 选择模式后，直接点击商品类型。系统会随机生成 5 个标签并自动复制，近期结果不会连续重复。</div>
+      <div>② 大促模式固定包含 3 个活动标签；常规模式会按产品、品类和通用标签随机组合。</div>
+    </div>
+    <div class="controls">
+      <input id="search" class="search" placeholder="搜索：短裤、文胸、连衣裙、塑形衣……">
+      <div class="mode">
+        <button id="promoMode" class="active" type="button">大促模式</button>
+        <button id="normalMode" type="button">常规模式</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="rulebar">
+    <div id="ruleText" class="ruletext">当前：3 个大促固定标签 + 2 个产品精准标签</div>
+    <button id="showRules" class="linkbtn" type="button">查看规则</button>
+  </div>
+
+  <section id="result" class="result">
+    <div class="result-head">
+      <div id="resultTitle" class="result-title">最近复制</div>
+      <button id="clearHistory" class="linkbtn" type="button">清除防重复记录</button>
+    </div>
+    <div id="resultText" class="result-text"></div>
+    <div id="resultNote" class="result-note"></div>
+    <div class="result-actions">
+      <button id="copyAgain" class="smallbtn primary" type="button">复制当前结果</button>
+      <button id="reroll" class="smallbtn" type="button">同类型再随机一组</button>
+    </div>
+  </section>
+
+  <main id="categories"></main>
+  <div id="empty" class="empty">没有找到对应类型</div>
+</div>
+
+<div id="rulesModal" class="modal-backdrop">
+  <div class="modal">
+    <h2>组合规则</h2>
+    <ol>
+      <li><strong>大促模式：</strong>固定复制 <code>#DealsForYouDays #SummerWins #spotlightfinds</code>，再从对应产品库随机抽取 2 个精准标签。</li>
+      <li><strong>常规模式：</strong>随机抽取 3 个产品精准标签、1 个品类标签、1 个通用服装标签，共 5 个。</li>
+      <li>同一类型会保存最近使用记录，尽量避免连续生成相同组合。</li>
+      <li>顶部搜索框可以快速筛选商品类型；点击卡片后会立即复制，无需二次确认。</li>
+    </ol>
+    <div class="modal-actions"><button id="closeRules" class="smallbtn primary" type="button">知道了</button></div>
+  </div>
+</div>
+
+<script>
+const TAG_DB = {"男装": {"男士短裤": {"specific": ["shorts", "shortsformen", "mensshorts", "5packshorts", "5packshortformen", "athleticshorts", "summerfits", "comfyshorts", "gymshorts", "workoutshorts", "casualshorts", "drawstringshorts"], "category": ["mensfashion", "mensoutfitideas", "mensstyle", "mensclothing", "casualmenswear", "menswear"]}, "男士短裤套装": {"specific": ["mensshortset", "shortsset", "mens2pieceset", "twopieceset", "matchingmensset", "summermensset", "casualmensset", "menscoordset", "mensoutfitset", "mensloungewear"], "category": ["mensfashion", "mensoutfitideas", "mensstyle", "mensclothing", "casualmenswear", "menswear"]}, "男T恤": {"specific": ["tshirt", "mensTshirt", "tee", "summertee", "graphictee", "crewnecktee", "casualtee", "basictee", "oversizedtee", "mensshirt", "shortsleevetee", "everydaytee"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear", "streetwear"]}, "男Polo衫": {"specific": ["polo", "poloshirt", "menspolo", "polooutfit", "shortsleevepolo", "casualpolo", "summerpolo", "golfpolo", "menspoloshirt", "smartcasual"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear"]}, "男士休闲上衣": {"specific": ["menstop", "casualtop", "mensshirt", "summermenswear", "loosefittop", "everydaytop", "menscasualshirt", "streetweartop", "shortsleevetop", "mensoutfit"], "category": ["mensfashion", "mensoutfitideas", "mensstyle", "mensclothing", "casualmenswear", "menswear"]}, "男士衬衫": {"specific": ["mensshirt", "buttondownshirt", "casualshirtmen", "formalshirtmen", "linenshirt", "mensdressshirt", "shortsleeveshirt", "summermensshirt", "collaredshirt", "mensbuttonup"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear", "smartcasual"]}, "男士长袖": {"specific": ["menslongsleeve", "longsleevetee", "mensTeeLongSleeve", "knitlongsleeve", "menslongsleevetop", "casualshirtmen", "loosefittop", "mensknitwear", "longsleevemenshirt", "fallmenswear"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear"]}, "男牛仔裤": {"specific": ["mensjeans", "denimjeans", "slimfitjeans", "straightlegjeans", "relaxedfitjeans", "stretchjeans", "casualdenim", "mensdenim", "streetstylejeans", "everydayjeans"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear", "streetwear"]}, "男休闲长裤": {"specific": ["casualpantsmen", "menspants", "mensTrousers", "straightpants", "loosefitpants", "relaxedfitpants", "drawstringpants", "summerpantsmen", "everydaypants", "menscasualpants"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear"]}, "男运动裤": {"specific": ["joggerpants", "trackpants", "sweatpants", "sportspants", "athleticpants", "gymjoggers", "mensjoggers", "workoutpants", "trainingpants", "mensactivewear"], "category": ["mensfashion", "mensstyle", "mensclothing", "mensactivewear", "gymwear", "athleisure"]}, "男士套装": {"specific": ["mensTwoPieceSet", "menscoordset", "relaxedfitset", "casualtracksuit", "mensloungeset", "twopieceoutfit", "matchingsetmen", "menssummerset", "mensoutfitset", "mensloungewear"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear", "athleisure"]}, "男士背心": {"specific": ["mensvest", "sleevelesstop", "cottonvest", "menstanktop", "streetwearvest", "menssleeveless", "summervest", "gymtank", "muscleshirt", "casualtanktop"], "category": ["mensfashion", "mensstyle", "mensclothing", "casualmenswear", "menswear", "streetwear"]}, "男士内裤": {"specific": ["mensunderwear", "boxerbriefs", "mensboxers", "mensbriefs", "breathableunderwear", "underwearformen", "softboxers", "comfortfit", "menbasics", "everydayunderwear"], "category": ["mensbasics", "menswear", "mensfashion", "underwear", "dailywear", "comfortwear"]}, "男外套": {"specific": ["mensjacket", "casualjacket", "lightweightjacket", "mensouterwear", "zipupjacket", "streetwearjacket", "windbreaker", "summerjacket", "menscoat", "layeringpiece"], "category": ["mensfashion", "mensstyle", "mensclothing", "menswear", "streetwear", "outerwear"]}, "男卫衣": {"specific": ["menshoodie", "hoodie", "menssweatshirt", "pulloverhoodie", "zipuphoodie", "casualhoodie", "oversizedhoodie", "streetwearhoodie", "mensfleece", "everydayhoodie"], "category": ["mensfashion", "mensstyle", "mensclothing", "menswear", "streetwear", "casualmenswear"]}}, "女装": {"女运动套装": {"specific": ["2pieceset", "gymset", "gymoutfit", "activewearset", "workoutset", "matchingworkoutset", "fitnessset", "yogaset", "athleisureset", "homeworkout"], "category": ["activewear", "gymwear", "athleisure", "womensfitness", "womensfashion", "workoutclothes"]}, "女休闲套装": {"specific": ["womenscoordset", "matchingset", "casualtwopiece", "loungesetwomen", "relaxedcoord", "womensset", "twopieceset", "womensloungewear", "casualset", "airportoutfit"], "category": ["womensfashion", "casualwear", "athleisure", "womenswear", "loungewear", "everydaystyle"]}, "女上衣（休闲）": {"specific": ["casualtops", "womensblouse", "graphictee", "casualshirt", "loosetop", "everydaytops", "summertop", "womensshirt", "ruchedtop", "vnecktop", "shortsleevetop", "dressytop"], "category": ["womensfashion", "womenswear", "casualwear", "outfitideas", "everydaystyle", "fashioninspo"]}, "女上衣（运动）": {"specific": ["workouttop", "gymtop", "sportstop", "activeweartop", "fitnessshirt", "yogatop", "croppedworkouttop", "quickdrytop", "trainingtop", "athleisuretop"], "category": ["activewear", "gymwear", "athleisure", "womensfitness", "workoutclothes", "womensfashion"]}, "女短裤": {"specific": ["womensshorts", "summershorts", "casualshorts", "highwaistshorts", "drawstringshorts", "comfyshorts", "beachshorts", "everydayshorts", "loosefitshorts", "womensbottoms"], "category": ["womensfashion", "womenswear", "casualwear", "summeroutfits", "outfitideas", "everydaystyle"]}, "女运动下装": {"specific": ["workoutshorts", "bikershorts", "gymshorts", "yogashorts", "activewearbottoms", "fitnessshorts", "highwaistshorts", "trainingbottoms", "workoutleggings", "gymleggings"], "category": ["activewear", "gymwear", "athleisure", "womensfitness", "workoutclothes", "womensfashion"]}, "女牛仔裤": {"specific": ["womensjeans", "highwaistjeans", "denimjeans", "baggyjeans", "straightlegjeans", "widelegjeans", "momjeans", "relaxedfitjeans", "womensdenim", "everydayjeans"], "category": ["womensfashion", "womenswear", "denimstyle", "streetstyle", "casualwear", "outfitideas"]}, "女休闲裤": {"specific": ["widelegpants", "womenscasualpants", "loosepants", "comfortpants", "taperedpants", "relaxedpants", "straightlegpants", "drawstringpants", "summerpants", "everydaypants"], "category": ["womensfashion", "womenswear", "casualwear", "athleisure", "outfitideas", "everydaystyle"]}, "女半裙": {"specific": ["midiskirt", "womensskirt", "pleatedskirt", "alineskirt", "denimskirt", "womensbottoms", "miniskirt", "highwaistskirt", "casualskirt", "summerskirt"], "category": ["womensfashion", "womenswear", "skirtoutfit", "casualwear", "outfitideas", "fashioninspo"]}, "女运动裙": {"specific": ["tennisskirt", "golfskirt", "sportskirt", "workoutskirt", "pleatedsportskirt", "athleticskirt", "activewearskirt", "skirtswithshorts", "gymoutfit", "tennisoutfit"], "category": ["activewear", "gymwear", "athleisure", "womensfitness", "golfwear", "tenniswear"]}, "连衣裙": {"specific": ["womensdress", "summerdress", "minidress", "mididress", "casualdress", "alinedress", "rucheddress", "vacationdress", "daydress", "dressoutfit"], "category": ["womensfashion", "womenswear", "dressstyle", "outfitideas", "fashioninspo", "summeroutfits"]}, "休闲连衣裙": {"specific": ["summerdress", "offshoulderdress", "crochetdress", "stripeddress", "minidresswomen", "beachdress", "casualdress", "vacationdress", "daydress", "flowydress"], "category": ["womensfashion", "womenswear", "casualwear", "summeroutfits", "beachstyle", "outfitideas"]}, "女长裙": {"specific": ["maxidress", "longdress", "floraldress", "mididress", "flowydress", "elegantdress", "summermaxidress", "vacationdress", "bohodress", "longsummerdress"], "category": ["womensfashion", "womenswear", "dressstyle", "elegantstyle", "outfitideas", "fashioninspo"]}, "女睡衣": {"specific": ["womenspajamas", "silksleepwear", "cutesleepwear", "nightwearset", "sleepwearset", "comfypajamas", "pajamaset", "womenssleepwear", "buttonpajamas", "loungesleepwear"], "category": ["sleepwear", "nightwear", "loungewear", "womenswear", "comfortwear", "dailycomfort"]}, "女文胸": {"specific": ["bras", "innerwear", "jellybra", "comfybra", "comfortbra", "seamlessbra", "wirelessbra", "everydaybra", "supportbra", "smoothfitbra", "pushupbra", "bralette"], "category": ["womenslingerie", "womensunderwear", "lingerie", "innerwear", "comfortwear", "dailywear"]}, "女内裤": {"specific": ["womensunderwear", "panties", "panty", "cottonunderwear", "cottonpanties", "seamlessunderwear", "breathableunderwear", "softunderwear", "everydayunderwear", "highwaistpanties"], "category": ["womenslingerie", "lingerie", "innerwear", "comfortwear", "dailywear", "womenswear"]}, "塑形衣／连体塑身衣": {"specific": ["shapewear", "bodysuitshapewear", "tummycontrol", "bodyshaper", "fajas", "waistshaper", "fullbodyshaper", "buttlifter", "compressionbodysuit", "shapewearforwomen", "sculptingbodysuit", "seamlessshapewear"], "category": ["womensshapewear", "womenslingerie", "womenswear", "bodyconfidence", "innerwear", "womensfashion"]}, "紧身裤／打底裤": {"specific": ["leggings", "womensleggings", "highwaistleggings", "workoutleggings", "gymleggings", "yogaleggings", "buttliftleggings", "compressionleggings", "seamlessleggings", "everydayleggings"], "category": ["activewear", "gymwear", "athleisure", "womensfitness", "womensfashion", "workoutclothes"]}, "丝袜／连裤袜": {"specific": ["tights", "pantyhose", "womenshosiery", "sheertights", "stockings", "womensstockings", "seamlesstights", "fashiontights", "everydayhosiery", "legwear"], "category": ["womensfashion", "womenswear", "hosiery", "legwear", "outfitideas", "fashioninspo"]}, "泳装": {"specific": ["swimwear", "womensswimwear", "swimsuit", "onepieceswimsuit", "bikini", "bathingsuit", "beachwear", "summerswim", "poolsideoutfit", "vacationswimwear"], "category": ["womensfashion", "summeroutfits", "beachstyle", "vacationstyle", "womenswear", "swimstyle"]}, "女外套": {"specific": ["womensjacket", "casualjacket", "lightweightjacket", "womensouterwear", "croppedjacket", "zipupjacket", "summerjacket", "layeringpiece", "womenscoat", "streetstylejacket"], "category": ["womensfashion", "womenswear", "outerwear", "streetstyle", "casualwear", "outfitideas"]}, "女针织衫": {"specific": ["womensknitwear", "knittop", "cardigan", "womenscardigan", "lightknit", "crochetknit", "knitsweater", "summerknit", "casualknitwear", "layeringtop"], "category": ["womensfashion", "womenswear", "casualwear", "outfitideas", "fashioninspo", "everydaystyle"]}, "女连体裤": {"specific": ["jumpsuit", "womensjumpsuit", "romper", "womensromper", "casualjumpsuit", "summerromper", "widelegjumpsuit", "onepieceoutfit", "vacationromper", "daytonightoutfit"], "category": ["womensfashion", "womenswear", "outfitideas", "summeroutfits", "vacationstyle", "fashioninspo"]}}};
+const PROMO_TAGS = ["DealsForYouDays", "SummerWins", "spotlightfinds"];
+const GENERAL_TAGS = ["fashion", "fashioninspo", "OOTD", "fashiontiktok", "outfitinspo", "fitcheck", "outfitideas", "styleinspo", "trendingfashion", "dailyoutfit"];
+const TAG_TRANSLATIONS = {"DealsForYouDays":"专属优惠活动","SummerWins":"夏日好物","spotlightfinds":"精选发现","fashion":"时尚","fashioninspo":"时尚灵感","OOTD":"今日穿搭","fashiontiktok":"TikTok时尚","outfitinspo":"穿搭灵感","fitcheck":"穿搭展示","outfitideas":"穿搭灵感","styleinspo":"风格灵感","trendingfashion":"热门时尚","dailyoutfit":"日常穿搭","mensfashion":"男士时尚","mensoutfitideas":"男士穿搭灵感","mensstyle":"男士风格","mensclothing":"男士服装","casualmenswear":"男士休闲装","menswear":"男装","womensfashion":"女士时尚","womenswear":"女装","casualwear":"休闲穿搭","activewear":"运动服","gymwear":"健身服","athleisure":"运动休闲","womensfitness":"女性健身","workoutclothes":"健身服装","underwear":"内衣","innerwear":"贴身衣物","lingerie":"女士内衣","comfortwear":"舒适穿搭","dailywear":"日常穿着","loungewear":"居家休闲服","sleepwear":"睡衣","nightwear":"睡衣","dailycomfort":"日常舒适","outerwear":"外套","streetwear":"街头穿搭","streetstyle":"街头风格","denimstyle":"牛仔风格","summeroutfits":"夏日穿搭","everydaystyle":"日常风格","dressstyle":"连衣裙风格","elegantstyle":"优雅风格","beachstyle":"沙滩风格","vacationstyle":"度假风格","swimstyle":"泳装风格","skirtoutfit":"半裙穿搭","golfwear":"高尔夫穿搭","tenniswear":"网球穿搭","womensshapewear":"女士塑形衣","bodyconfidence":"自信身形","hosiery":"袜类","legwear":"腿部穿搭","mensbasics":"男士基础款","0":"0","2pieceset":"两件套·套装","5packshortformen":"男士","5packshorts":"短裤","active":"active","activewearbottoms":"activewearbottoms","activewearset":"套装","activewearskirt":"半裙","activeweartop":"上衣","airportoutfit":"穿搭","alinedress":"连衣裙·A字","alineskirt":"半裙·A字","app":"app","athleisureset":"套装","athleisuretop":"上衣","athleticpants":"运动·长裤","athleticshorts":"运动·短裤","athleticskirt":"运动·半裙","badge":"badge","baggyjeans":"牛仔裤","basictee":"基础款·T恤","bathingsuit":"bathingsuit","beachdress":"连衣裙·沙滩","beachshorts":"短裤·沙滩","beachwear":"沙滩","bikershorts":"短裤","bikini":"比基尼","block":"block","bodyshaper":"塑身衣","bodysuitshapewear":"塑形衣·连体衣","bohodress":"连衣裙","boxerbriefs":"紧身平角内裤","bralette":"无钢圈文胸","bras":"文胸","breathableunderwear":"透气·内衣","buttlifter":"提臀","buttliftleggings":"紧身裤","button":"button","buttondownshirt":"纽扣·衬衫","buttonpajamas":"睡衣","card":"card","cardigan":"cardigan","casualdenim":"休闲·牛仔","casualdress":"休闲·连衣裙","casualhoodie":"休闲·连帽卫衣","casualjacket":"休闲·夹克","casualjumpsuit":"连体裤·休闲","casualknitwear":"休闲·针织","casualmensset":"休闲·男士·套装","casualpantsmen":"休闲·长裤·男士","casualpolo":"休闲·Polo衫","casualset":"休闲·套装","casualshirt":"休闲·衬衫","casualshirtmen":"休闲·衬衫·男士","casualshorts":"休闲·短裤","casualskirt":"休闲·半裙","casualtanktop":"休闲·背心·上衣","casualtee":"休闲·T恤","casualtop":"休闲·上衣","casualtops":"休闲·上衣","casualtracksuit":"休闲·运动","casualtwopiece":"两件套·休闲","categories":"categories","category":"category","clearHistory":"clearHistory","click":"click","closeRules":"closeRules","collaredshirt":"衬衫","comfortbra":"舒适·文胸","comfortfit":"舒适","comfortpants":"舒适·长裤","comfybra":"舒适·文胸","comfypajamas":"睡衣·舒适","comfyshorts":"短裤·舒适","compressionbodysuit":"塑形加压·连体衣","compressionleggings":"塑形加压·紧身裤","controls":"controls","copy":"copy","copyAgain":"copyAgain","cottonpanties":"女士内裤·棉质","cottonunderwear":"内衣·棉质","cottonvest":"棉质·背心","crewnecktee":"圆领·T恤","crochetdress":"钩针·连衣裙","crochetknit":"钩针·针织","croppedjacket":"夹克","croppedworkouttop":"健身·上衣","cutesleepwear":"睡衣·可爱","daydress":"连衣裙","daytonightoutfit":"穿搭","denimjeans":"牛仔裤·牛仔","denimskirt":"牛仔·半裙","drawstringpants":"抽绳·长裤","drawstringshorts":"抽绳·短裤","dressoutfit":"穿搭·连衣裙","dressytop":"连衣裙·上衣","elegantdress":"优雅·连衣裙","empty":"empty","everydaybra":"日常·文胸","everydayhoodie":"日常·连帽卫衣","everydayhosiery":"日常·袜类","everydayjeans":"日常·牛仔裤","everydayleggings":"日常·紧身裤","everydaypants":"日常·长裤","everydayshorts":"日常·短裤","everydaytee":"日常·T恤","everydaytop":"日常·上衣","everydaytops":"日常·上衣","everydayunderwear":"内衣·日常","fajas":"塑形衣","fallmenswear":"男士","fashiontights":"连裤袜","fitnessset":"健身·套装","fitnessshirt":"健身·衬衫","fitnessshorts":"健身·短裤","fixed":"fixed","floraldress":"碎花·连衣裙","flowydress":"连衣裙·飘逸","formalshirtmen":"正装·衬衫·男士","fullbodyshaper":"塑身衣","golfpolo":"Polo衫·高尔夫","golfskirt":"半裙·高尔夫","graphictee":"印花·T恤","grid":"grid","group":"group","gymjoggers":"束脚裤·健身","gymleggings":"紧身裤·健身","gymoutfit":"穿搭·健身","gymset":"套装·健身","gymshorts":"短裤·健身","gymtank":"背心·健身","gymtop":"上衣·健身","hero":"hero","highwaistjeans":"高腰·牛仔裤","highwaistleggings":"高腰·紧身裤","highwaistpanties":"高腰·女士内裤","highwaistshorts":"高腰·短裤","highwaistskirt":"高腰·半裙","homeworkout":"健身","hoodie":"连帽卫衣","input":"input","jellybra":"文胸","joggerpants":"束脚裤·长裤","jumpsuit":"连体裤","knitlongsleeve":"长袖·针织","knitsweater":"针织","knittop":"针织·上衣","layeringpiece":"叠穿","layeringtop":"叠穿·上衣","leggings":"紧身裤","lightknit":"针织","lightweightjacket":"轻量·夹克","linenshirt":"衬衫·亚麻","linkbtn":"linkbtn","longdress":"连衣裙","longsleevemenshirt":"长袖·衬衫·男士","longsleevetee":"长袖·T恤","longsummerdress":"夏季·连衣裙","loosefitpants":"宽松版·长裤","loosefitshorts":"宽松版·短裤","loosefittop":"宽松版·上衣","loosepants":"长裤","loosetop":"套装","loungesetwomen":"男士·套装","loungesleepwear":"睡衣","matchingmensset":"配套·男士·套装","matchingset":"配套·套装","matchingsetmen":"配套·男士·套装","matchingworkoutset":"配套·健身·套装","maxidress":"连衣裙","menbasics":"基础款·男士","mens2pieceset":"两件套·男士·套装","mensTeeLongSleeve":"长袖·男士·T恤","mensTrousers":"长裤·男士","mensTshirt":"T恤·男士","mensTwoPieceSet":"两件套·男士·套装","mensactivewear":"男士","mensboxers":"平角内裤·男士","mensbriefs":"三角内裤·男士","mensbuttonup":"纽扣·男士","menscasualpants":"休闲·长裤·男士","menscasualshirt":"休闲·衬衫·男士","menscoat":"男士·外套","menscoordset":"男士·套装","mensdenim":"牛仔·男士","mensdressshirt":"衬衫·连衣裙·男士","mensfleece":"男士","menshoodie":"连帽卫衣·男士","mensjacket":"夹克·男士","mensjeans":"牛仔裤·男士","mensjoggers":"束脚裤·男士","mensknitwear":"男士·针织","menslongsleeve":"长袖·男士","menslongsleevetop":"长袖·男士·上衣","mensloungeset":"男士·套装","mensloungewear":"男士","mensouterwear":"男士","mensoutfit":"穿搭·男士","mensoutfitset":"穿搭·男士·套装","menspants":"长裤·男士","menspolo":"男士·Polo衫","menspoloshirt":"衬衫·男士·Polo衫","mensshirt":"衬衫·男士","mensshorts":"短裤·男士","mensshortset":"短裤·男士","menssleeveless":"无袖·男士","menssummerset":"夏季·男士·套装","menssweatshirt":"卫衣·男士","menstanktop":"男士·背心·上衣","menstop":"男士·上衣","mensunderwear":"内衣·男士","mensvest":"男士·背心","mididress":"连衣裙","midiskirt":"半裙","minidress":"连衣裙","minidresswomen":"连衣裙·男士","miniskirt":"半裙","modal":"modal","mode":"mode","momjeans":"牛仔裤","muscleshirt":"衬衫","nightwearset":"睡衣·套装","none":"none","normal":"normal","normalMode":"normalMode","offshoulderdress":"连衣裙","ok":"ok","onepieceoutfit":"穿搭","onepieceswimsuit":"泳衣","oversizedhoodie":"宽松大版·连帽卫衣","oversizedtee":"宽松大版·T恤","pajamaset":"睡衣","panties":"女士内裤","panty":"女士内裤","pantyhose":"连裤袜","pleatedskirt":"百褶·半裙","pleatedsportskirt":"百褶·半裙·运动","polo":"Polo衫","polooutfit":"穿搭·Polo衫","poloshirt":"衬衫·Polo衫","poolsideoutfit":"穿搭","promo":"promo","promoMode":"promoMode","pulloverhoodie":"套头·连帽卫衣","pushupbra":"聚拢·文胸","quickdrytop":"速干·上衣","relaxedcoord":"relaxedcoord","relaxedfitjeans":"宽松版·牛仔裤","relaxedfitpants":"宽松版·长裤","relaxedfitset":"宽松版·套装","relaxedpants":"长裤","reroll":"reroll","result":"result","resultNote":"resultNote","resultText":"resultText","resultTitle":"resultTitle","romper":"连体短裤","rucheddress":"褶皱·连衣裙","ruchedtop":"褶皱·上衣","ruleText":"ruleText","rulebar":"rulebar","rulesModal":"rulesModal","ruletext":"ruletext","sculptingbodysuit":"塑形·连体衣","seamlessbra":"无痕·文胸","seamlessleggings":"无痕·紧身裤","seamlessshapewear":"塑形衣·无痕","seamlesstights":"无痕·连裤袜","seamlessunderwear":"内衣·无痕","search":"search","section":"section","shapewear":"塑形衣","shapewearforwomen":"塑形衣·男士","sheertights":"连裤袜","shorts":"短裤","shortsformen":"短裤·男士","shortsleevepolo":"短袖·Polo衫","shortsleeveshirt":"短袖·衬衫","shortsleevetee":"短袖·T恤","shortsleevetop":"短袖·上衣","shortsset":"短裤·套装","show":"show","showRules":"showRules","silksleepwear":"睡衣·丝质","skirtswithshorts":"短裤·半裙","sleepwearset":"睡衣·套装","sleevelesstop":"无袖·上衣","slimfitjeans":"修身版·牛仔裤","smallbtn":"smallbtn","smartcasual":"轻商务休闲","smoothfitbra":"平滑贴合·文胸","softboxers":"平角内裤·柔软","softunderwear":"内衣·柔软","specific":"specific","sportskirt":"半裙·运动","sportspants":"长裤·运动","sportstop":"运动·上衣","stockings":"丝袜","straightlegjeans":"直筒·牛仔裤","straightlegpants":"直筒·长裤","straightpants":"直筒·长裤","streetstylejacket":"夹克","streetstylejeans":"牛仔裤","streetwearhoodie":"街头风·连帽卫衣","streetwearjacket":"街头风·夹克","streetweartop":"街头风·上衣","streetwearvest":"街头风·背心","stretchjeans":"弹力·牛仔裤","stripeddress":"条纹·连衣裙","summerdress":"夏季·连衣裙","summerfits":"夏季","summerjacket":"夏季·夹克","summerknit":"夏季·针织","summermaxidress":"夏季·连衣裙","summermensset":"夏季·男士·套装","summermensshirt":"夏季·衬衫·男士","summermenswear":"夏季·男士","summerpants":"夏季·长裤","summerpantsmen":"夏季·长裤·男士","summerpolo":"夏季·Polo衫","summerromper":"夏季·连体短裤","summershorts":"夏季·短裤","summerskirt":"夏季·半裙","summerswim":"夏季","summertee":"夏季·T恤","summertop":"夏季·上衣","summervest":"夏季·背心","supportbra":"支撑·文胸","sweatpants":"卫裤","swimsuit":"泳衣","swimwear":"泳装","taperedpants":"长裤","tee":"T恤","tennisoutfit":"穿搭·网球","tennisskirt":"网球·半裙","textarea":"textarea","tights":"连裤袜","toast":"toast","trackpants":"长裤·运动","trainingbottoms":"训练","trainingpants":"训练·长裤","trainingtop":"训练·上衣","tshirt":"T恤","tummycontrol":"收腹","twopieceoutfit":"两件套·穿搭","twopieceset":"两件套·套装","underwearformen":"内衣·男士","usTagMode":"usTagMode","vacationdress":"度假·连衣裙","vacationromper":"度假·连体短裤","vacationswimwear":"泳装·度假","viewport":"viewport","vnecktop":"V领·上衣","waistshaper":"waistshaper","widelegjeans":"阔腿·牛仔裤","widelegjumpsuit":"连体裤·阔腿","widelegpants":"阔腿·长裤","windbreaker":"windbreaker","wirelessbra":"无钢圈·文胸","womensblouse":"女士·女士上衣","womensbottoms":"女士","womenscardigan":"女士","womenscasualpants":"女士·休闲·长裤","womenscoat":"女士·外套","womenscoordset":"女士·套装","womensdenim":"女士·牛仔","womensdress":"女士·连衣裙","womenshosiery":"袜类·女士","womensjacket":"女士·夹克","womensjeans":"女士·牛仔裤","womensjumpsuit":"连体裤·女士","womensknitwear":"女士·针织","womensleggings":"紧身裤·女士","womenslingerie":"女士","womensloungewear":"女士","womensouterwear":"女士","womenspajamas":"睡衣·女士","womensromper":"女士·连体短裤","womensset":"女士·套装","womensshirt":"女士·衬衫","womensshorts":"女士·短裤","womensskirt":"女士·半裙","womenssleepwear":"睡衣·女士","womensstockings":"丝袜·女士","womensswimwear":"泳装·女士","womensunderwear":"内衣·女士","workoutleggings":"紧身裤·健身","workoutpants":"健身·长裤","workoutset":"健身·套装","workoutshorts":"健身·短裤","workoutskirt":"健身·半裙","workouttop":"健身·上衣","yogaleggings":"紧身裤·瑜伽","yogaset":"瑜伽·套装","yogashorts":"短裤·瑜伽","yogatop":"瑜伽·上衣","zipuphoodie":"连帽卫衣·拉链款","zipupjacket":"夹克·拉链款"};
+
+let mode = localStorage.getItem("usTagMode") || "promo";
+let lastCategory = "";
+let lastResult = "";
+
+const $ = s => document.querySelector(s);
+const categoriesEl = $("#categories");
+const searchEl = $("#search");
+const toastEl = $("#toast");
+const resultEl = $("#result");
+const resultTitleEl = $("#resultTitle");
+const resultTextEl = $("#resultText");
+const resultNoteEl = $("#resultNote");
+const promoBtn = $("#promoMode");
+const normalBtn = $("#normalMode");
+const ruleText = $("#ruleText");
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+
+function shuffled(arr) {
+  const a = [...new Set(arr)];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pick(arr, count, exclude = []) {
+  const deny = new Set(exclude.map(x => x.toLowerCase()));
+  const clean = shuffled(arr).filter(x => !deny.has(x.toLowerCase()));
+  return clean.slice(0, count);
+}
+
+function historyKey(group, category) {
+  return "usTagHistory:" + group + ":" + category + ":" + mode;
+}
+
+function getHistory(group, category) {
+  try { return JSON.parse(localStorage.getItem(historyKey(group, category)) || "[]"); }
+  catch { return []; }
+}
+
+function saveHistory(group, category, value) {
+  const old = getHistory(group, category);
+  const next = [value, ...old.filter(x => x !== value)].slice(0, 12);
+  localStorage.setItem(historyKey(group, category), JSON.stringify(next));
+}
+
+function buildTags(group, category) {
+  const item = TAG_DB[group][category];
+  const history = getHistory(group, category);
+  let result = "";
+
+  for (let attempt = 0; attempt < 60; attempt++) {
+    let tags;
+    if (mode === "promo") {
+      const chosen = pick(item.specific, 2, PROMO_TAGS);
+      tags = [...PROMO_TAGS, ...chosen];
+    } else {
+      const product = pick(item.specific, 3);
+      const cat = pick(item.category, 1, product);
+      const general = pick(GENERAL_TAGS, 1, [...product, ...cat]);
+      tags = [...product, ...cat, ...general];
+    }
+    tags = [...new Set(tags)].slice(0, 5);
+    result = tags.map(t => "#" + t).join(" ");
+    if (!history.includes(result)) break;
+  }
+  saveHistory(group, category, result);
+  return result;
+}
+
+
+function tagAnnotation(value) {
+  const tags = value.match(/#[A-Za-z0-9]+/g) || [];
+  return tags.map(raw => {
+    const key = raw.slice(1);
+    return TAG_TRANSLATIONS[key] || TAG_TRANSLATIONS[key.toLowerCase()] || key;
+  }).join(" · ");
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (_) {}
+    ta.remove();
+    return ok;
+  }
+}
+
+function showToast(message, ok = true) {
+  toastEl.textContent = message;
+  toastEl.classList.toggle("ok", ok);
+  toastEl.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+}
+
+async function generateAndCopy(group, category) {
+  const value = buildTags(group, category);
+  const ok = await copyText(value);
+  lastCategory = group + "||" + category;
+  lastResult = value;
+  resultTitleEl.textContent = category + " · " + (mode === "promo" ? "大促模式" : "常规模式");
+  resultTextEl.textContent = value;
+  resultNoteEl.textContent = "中文注释：" + tagAnnotation(value);
+  resultEl.classList.add("show");
+  if (ok) showToast("复制成功 · " + category);
+  else showToast("已生成，请点击“复制当前结果”", false);
+}
+
+function render(filter = "") {
+  const q = filter.trim().toLowerCase();
+  let totalShown = 0;
+  categoriesEl.innerHTML = "";
+
+  Object.entries(TAG_DB).forEach(([group, items]) => {
+    const matches = Object.entries(items).filter(([name, item]) => {
+      const hay = [group, name, ...item.specific, ...item.category].join(" ").toLowerCase();
+      return !q || hay.includes(q);
+    });
+    if (!matches.length) return;
+
+    totalShown += matches.length;
+    const section = document.createElement("section");
+    section.className = "group";
+    section.innerHTML = `
+      <h2 class="group-title">${esc(group)} <span class="badge">${matches.length} 类</span></h2>
+      <div class="grid"></div>
+    `;
+    const grid = section.querySelector(".grid");
+    matches.forEach(([name, item]) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "card";
+      const count = new Set([...item.specific, ...item.category]).size;
+      btn.innerHTML = `
+        <div class="card-name">${esc(name)}</div>
+        <div class="card-meta">${count} 个可选标签 · 随机防重复</div>
+        <div class="card-copy">点击复制</div>
+      `;
+      btn.addEventListener("click", () => generateAndCopy(group, name));
+      grid.appendChild(btn);
+    });
+    categoriesEl.appendChild(section);
+  });
+
+  $("#empty").style.display = totalShown ? "none" : "block";
+}
+
+function setMode(next) {
+  mode = next;
+  localStorage.setItem("usTagMode", mode);
+  promoBtn.classList.toggle("active", mode === "promo");
+  normalBtn.classList.toggle("active", mode === "normal");
+  ruleText.textContent = mode === "promo"
+    ? "当前：3 个大促固定标签 + 2 个产品精准标签"
+    : "当前：3 个产品精准标签 + 1 个品类标签 + 1 个通用标签";
+}
+
+promoBtn.addEventListener("click", () => setMode("promo"));
+normalBtn.addEventListener("click", () => setMode("normal"));
+searchEl.addEventListener("input", e => render(e.target.value));
+
+$("#copyAgain").addEventListener("click", async () => {
+  if (!lastResult) return;
+  const ok = await copyText(lastResult);
+  showToast(ok ? "复制成功" : "复制失败，请手动选择", ok);
+});
+
+$("#reroll").addEventListener("click", () => {
+  if (!lastCategory) return;
+  const [group, category] = lastCategory.split("||");
+  generateAndCopy(group, category);
+});
+
+$("#clearHistory").addEventListener("click", () => {
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith("usTagHistory:")) localStorage.removeItem(k);
+  });
+  showToast("防重复记录已清除");
+});
+
+$("#showRules").addEventListener("click", () => $("#rulesModal").classList.add("show"));
+$("#closeRules").addEventListener("click", () => $("#rulesModal").classList.remove("show"));
+$("#rulesModal").addEventListener("click", e => {
+  if (e.target.id === "rulesModal") $("#rulesModal").classList.remove("show");
+});
+
+setMode(mode);
+render();
+</script>
+</body>
+</html>
