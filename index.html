@@ -11,9 +11,9 @@
   --ok:#15a46d; --shadow:0 12px 32px rgba(36,49,84,.08);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
-button,input{font:inherit}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--bg)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom);-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;-webkit-appearance:none;appearance:none}button{touch-action:manipulation}
 .app{max-width:1120px;margin:0 auto;padding:22px 18px 64px}
 .hero{background:linear-gradient(135deg,#06183f 0%,#0b2f72 50%,#1556a6 100%);color:#fff;border-radius:24px;padding:25px;box-shadow:var(--shadow)}
 .hero h1{margin:0 0 6px;font-size:clamp(24px,4vw,38px)}
@@ -41,12 +41,13 @@ button,input{font:inherit}
 .group-title{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:20px}
 .badge{font-size:12px;background:#e8edff;color:#4458da;border-radius:999px;padding:4px 8px}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.card{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:15px;cursor:pointer;transition:.18s;box-shadow:0 5px 18px rgba(36,49,84,.04);min-height:93px}
+.card{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:15px;cursor:pointer;transition:.18s;box-shadow:0 5px 18px rgba(36,49,84,.04);min-height:93px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
 .card:hover{transform:translateY(-2px);border-color:#cdd5ff;box-shadow:var(--shadow)}
 .card:active{transform:scale(.985)}
-.card-name{font-weight:800;font-size:16px;margin-bottom:8px}
-.card-meta{font-size:12px;color:var(--muted)}
-.card-copy{position:absolute;right:12px;bottom:12px;color:var(--primary);font-size:12px;font-weight:800}
+.card-main{min-width:0}
+.card-name{font-weight:800;font-size:16px;margin:0;line-height:1.35;color:#0d7ff0}
+.card-meta{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.45}
+.card-copy{position:static;display:inline-flex;align-items:center;justify-content:center;min-width:54px;height:32px;padding:0 11px;border-radius:999px;background:#eef2ff;color:var(--primary);font-size:12px;font-weight:800;white-space:nowrap}
 .empty{display:none;text-align:center;padding:50px 0;color:var(--muted)}
 .toast{position:fixed;z-index:99;left:50%;top:18px;transform:translate(-50%,-120px);background:#10182a;color:#fff;border-radius:14px;padding:12px 18px;box-shadow:0 12px 36px rgba(0,0,0,.22);transition:.28s;max-width:calc(100vw - 28px);text-align:center;font-weight:700}
 .toast.show{transform:translate(-50%,0)}
@@ -58,17 +59,50 @@ button,input{font:inherit}
 .modal li{margin:10px 0;line-height:1.65}
 .modal code{background:#f1f3f8;padding:2px 6px;border-radius:6px}
 .modal-actions{display:flex;justify-content:flex-end;margin-top:18px}
-@media(max-width:850px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){
-  .app{padding:14px 12px 48px}
-  .hero{border-radius:19px;padding:20px 16px}
-  .controls{grid-template-columns:1fr}
-  .mode{display:grid;grid-template-columns:1fr 1fr}
-  .mode button{width:100%}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-  .card{padding:13px;min-height:88px}
+  .app{
+    padding:
+      max(12px,env(safe-area-inset-top))
+      max(12px,env(safe-area-inset-right))
+      calc(44px + env(safe-area-inset-bottom))
+      max(12px,env(safe-area-inset-left));
+  }
+  .hero{border-radius:22px;padding:20px 16px 16px}
+  .hero h1{font-size:24px;line-height:1.25;letter-spacing:-.4px;margin-bottom:9px}
+  .hero-note{margin-top:0;font-size:10.5px;line-height:1.65;color:rgba(255,255,255,.72)}
+  .hero-note div+div{margin-top:2px}
+  .controls{grid-template-columns:1fr;gap:10px;margin-top:15px}
+  .search{min-height:48px;padding:12px 14px;border-radius:15px;font-size:16px}
+  .mode{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:16px}
+  .mode button{width:100%;min-height:46px;padding:10px 8px;border-radius:12px;font-size:15px}
+  .rulebar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;margin:14px 2px 8px}
+  .ruletext{font-size:12.5px;line-height:1.5}
+  .linkbtn{font-size:13px;line-height:1.35;white-space:nowrap;padding:0}
+  .result{margin:12px 0 8px;border-radius:18px;padding:14px}
+  .result-head{align-items:flex-start}
+  .result-title{font-size:15px;line-height:1.4}
+  .result-text{font-size:13px;line-height:1.7;padding:12px;border-radius:12px}
+  .result-note{font-size:10.5px;line-height:1.55;margin-top:6px}
+  .result-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .smallbtn{min-height:42px;padding:9px 10px}
+  .group{margin-top:22px}
+  .group-title{font-size:22px;margin-bottom:11px}
+  .badge{font-size:12px;padding:4px 9px}
+  .grid{grid-template-columns:1fr;gap:10px}
+  .card{min-height:78px;padding:14px 14px 14px 16px;border-radius:18px;gap:12px;box-shadow:0 5px 16px rgba(23,43,84,.045)}
+  .card-name{font-size:17px}
+  .card-meta{font-size:12px;margin-top:5px}
+  .card-copy{min-width:52px;height:32px;padding:0 10px;font-size:12px}
+  .toast{top:calc(env(safe-area-inset-top) + 10px);padding:11px 15px;font-size:14px;border-radius:13px}
+  .modal-backdrop{padding:0;align-items:flex-end}
+  .modal{width:100%;max-height:82vh;border-radius:24px 24px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom))}
+  .modal h2{font-size:20px}
+  .modal li{font-size:14px}
 }
-@media(max-width:390px){.grid{grid-template-columns:1fr}}
+@media(min-width:651px) and (max-width:850px){
+  .app{padding-left:16px;padding-right:16px}
+}}
 </style>
 </head>
 <body>
@@ -278,11 +312,14 @@ function render(filter = "") {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "card";
+      btn.setAttribute("aria-label", "随机生成并复制" + name + "标签");
       const count = new Set([...item.specific, ...item.category]).size;
       btn.innerHTML = `
-        <div class="card-name">${esc(name)}</div>
-        <div class="card-meta">${count} 个可选标签 · 随机防重复</div>
-        <div class="card-copy">点击复制</div>
+        <div class="card-main">
+          <div class="card-name">${esc(name)}</div>
+          <div class="card-meta">${count} 个可选标签 · 随机防重复</div>
+        </div>
+        <div class="card-copy">复制</div>
       `;
       btn.addEventListener("click", () => generateAndCopy(group, name));
       grid.appendChild(btn);
